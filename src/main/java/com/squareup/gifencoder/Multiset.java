@@ -41,8 +41,17 @@ public interface Multiset<E> extends Collection<E> {
    * @return the number of elements removed
    */
   int remove(Object element, int n);
+  
+  /**
+   * Remove all counts of an element.
+   *
+   * @param element the element the remove
+   * @return the number of elements removed
+   */
+  int removeAllDuplicates(Object element);
 
   int count(Object element);
 
   Set<E> getDistinctElements();
+  
 }

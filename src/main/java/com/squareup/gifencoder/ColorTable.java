@@ -72,4 +72,9 @@ final class ColorTable {
     }
     return result;
   }
+  
+  int getIndex(Color color) {
+	  Integer index = colorToIndex.get(color);
+	  return index != null ? index.intValue() : -1;
+  }
 }

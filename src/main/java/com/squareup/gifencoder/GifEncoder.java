@@ -93,7 +93,18 @@ public final class GifEncoder {
     Multiset<Color> originalColors = image.getColors();
     Set<Color> distinctColors = originalColors.getDistinctElements();
     if (distinctColors.size() > MAX_COLOR_COUNT) {
-      distinctColors = options.quantizer.quantize(originalColors, MAX_COLOR_COUNT);
+      boolean transparentColorTakenOut = false;
+      if (options.hasTransparentColor()) {
+        if (distinctColors.contains(options.transparentColor)) {
+          originalColors.removeAllDuplicates(options.transparentColor);
+          transparentColorTakenOut = true;
+        }
+      }
+      int maxColorCount = MAX_COLOR_COUNT + (transparentColorTakenOut ? -1 : 0);
+      distinctColors = options.quantizer.quantize(originalColors, maxColorCount);
+      if(transparentColorTakenOut) {
+        distinctColors.add(options.transparentColor);
+      }
       image = options.ditherer.dither(image, distinctColors);
     }
 
@@ -101,8 +112,12 @@ public final class GifEncoder {
     int paddedColorCount = colorTable.paddedSize();
     int[] colorIndices = colorTable.getIndices(image);
 
-    GraphicsControlExtensionBlock.write(outputStream, options.disposalMethod, false, false,
-        options.delayCentiseconds, 0);
+    int transparentColorIndex = 0;
+    if(options.hasTransparentColor()) {
+      transparentColorIndex = colorTable.getIndex(options.transparentColor);
+    }
+    GraphicsControlExtensionBlock.write(outputStream, options.disposalMethod, false, options.hasTransparentColor() && transparentColorIndex != -1,
+        options.delayCentiseconds, transparentColorIndex >= 0 ? transparentColorIndex : 0);
     ImageDescriptorBlock.write(outputStream, options.left, options.top, image.getWidth(),
         image.getHeight(), true, false, false, getColorTableSizeField(paddedColorCount));
     colorTable.write(outputStream);

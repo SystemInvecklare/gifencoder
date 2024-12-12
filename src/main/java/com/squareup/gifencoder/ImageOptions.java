@@ -24,6 +24,7 @@ public final class ImageOptions {
   Ditherer ditherer = FloydSteinbergDitherer.INSTANCE;
   DisposalMethod disposalMethod = DisposalMethod.UNSPECIFIED;
   int delayCentiseconds = 0;
+  Color transparentColor = null;
 
   /**
    * Create a new {@link ImageOptions} with all the defaults.
@@ -59,5 +60,14 @@ public final class ImageOptions {
   public ImageOptions setDelay(long duration, TimeUnit unit) {
     this.delayCentiseconds = (int) (unit.toMillis(duration) / 10);
     return this;
+  }
+  
+  public ImageOptions setTransparentColor(Color transparentColor) {
+	this.transparentColor = transparentColor;
+	return this;
+  }
+
+  public boolean hasTransparentColor() {
+	return transparentColor != null;
   }
 }

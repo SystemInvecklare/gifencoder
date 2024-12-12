@@ -65,6 +65,17 @@ public final class HashMultiset<E> extends AbstractCollection<E> implements Mult
     size -= count.value;
     return count.value;
   }
+  
+  @Override public int removeAllDuplicates(Object element) {
+    Count count = elementCounts.get(element);
+    if (count == null) {
+      return 0;
+    }
+
+    elementCounts.remove(element);
+    size -= count.value;
+    return count.value;
+  }
 
   @Override public boolean remove(Object element) {
     return remove(element, 1) > 0;
