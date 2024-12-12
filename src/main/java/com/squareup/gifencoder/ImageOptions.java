@@ -64,6 +64,7 @@ public final class ImageOptions {
   
   public ImageOptions setTransparentColor(Color transparentColor) {
 	this.transparentColor = transparentColor;
+	this.disposalMethod = DisposalMethod.RESTORE_TO_BACKGROUND;
 	return this;
   }
 
